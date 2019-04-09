@@ -1,0 +1,19 @@
+#include "gef.cpp"
+
+using namespace std;
+
+void Mut_Del(GenCode &A)
+{
+	long rn=rand()%200;
+	long i=0;
+	while (rn>0)
+	{
+		rn=rn-A.comp(i)+i-1;
+		i++;
+		if (i>A.Gens.size())
+		{
+			i=0;
+		}
+	}
+	A.Gens.erase(A.Gens.begin()+i-1,A.Gens.begin()+A.comp(i));
+}
