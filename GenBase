@@ -46,15 +46,3 @@ struct GenCode
 	}
 };
 
-int main()
-{
-	GenCode A;
-	A.Gens={5,3,4,6,3,7};
-	long com=0;
-	while (com<A.Gens.size())
-	{
-		com=A.comp(com);
-		cout<<com<<" ";
-		com++;
-	}
-}
