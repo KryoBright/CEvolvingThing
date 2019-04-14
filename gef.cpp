@@ -31,12 +31,17 @@ struct GenCode
 			long p=comp(compb+1,y);
 			y=comp(p+1,y);
 			long t=y;
-			while(Gens[t]!='B')
+			while((Gens[t]!='B')and(t<Gens.length()))
 			{
 				t++;
 			}
+			if (t==Gens.length())
+			{
+				t--;
+			}
 			return t;
 		}
+		return compb;
 	}
 };
 
