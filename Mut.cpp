@@ -45,7 +45,6 @@ int main()
 }
 
 unsigned long long tester(
-	const char * pfile,
 	const char * ofile,
 	const char * ifile,
 	const std::string & prog,
@@ -53,11 +52,7 @@ unsigned long long tester(
 	const std::vector<unsigned long long> & x
 )
 {
-	std::ofstream pstream(pfile);
-	
-	pstream << prog << '\n';
-	
-	system("gnome-terminal -x sh -c 'g++ -std=c++17 -o main *.cpp'");
+	system("gnome-terminal -x sh -c 'g++ -std=c++17 -o main Code.cpp'");
 	
 	char check[(int)1e9];
 	std::vector<unsigned long long> y(a.size());
@@ -68,7 +63,6 @@ unsigned long long tester(
 	for(unsigned long long i = 0; i < a.size(); ++i)
 	{
 		std::ifstream ostream(ofile);
-		std::ofstream istream(ifile);
 		
 		istream << a[i].size() << '\n';
 		for(unsigned long long j = 0; j < a[i].size(); ++i)
@@ -78,9 +72,11 @@ unsigned long long tester(
 		
 		system("gnome-terminal -x sh -c './main'");
 		
+		std::ofstream istream(ifile, ios::out);
+		
 		ostream >> y[i];
 		
-		unic_ans += check[y[i]];
+		unic_ans += !check[y[i]];
 		r_ans += y[i] == x[i];
 		
 		check[y[i]] = true;
