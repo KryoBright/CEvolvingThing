@@ -1,26 +1,36 @@
 #include "Mut_Del.cpp"
+#include "Mut_add.cpp"
+#include "Cross.cpp"
+#include "Const.cpp"
 #include <ctime>
 
 int main()
 {
+	freopen("Code.cpp", "w", stdout);
 	srand(time(0));
-	GenCode A;
-	A.Gens={7,10,8,3,2,3,4,9,3,2,3,4,11,3,5,3,6,3,7,15,3,8,3,9};
-	long y;
-	cout<<A.comp(0,y)<<" ";
-	cout<<y<<endl;
-	Mut_Del(A);
-	long cur=0;
-/*	while (cur<A.Gens.size())
+	GenCode A,B,R;
+	long b=0;
+	long n=40;
+	while (n>0)
 	{
-		cur=A.comp(cur,y);
-		cout<<endl<<cur<<" ";
-		cur++;
-	}*/
-	cur=0;
-	while (cur<A.Gens.size())
-	{
-		cout<<A.Gens[cur]<<" ";
-		cur++;
+		add(A);
+		n--;
 	}
+	b=0;
+	n=40;
+	while (n>0)
+	{
+		add(B);
+		n--;
+	}
+	R=cross(A,B);
+	cout<<endl;
+	n=3;
+	while (n>0)
+	{
+		Mut_all(R);
+		n--;
+	}
+	cout<<endl;
+	rout(R);
 }
