@@ -464,7 +464,6 @@ unsigned long long tester(
   const std::vector<unsigned long long> & x
 )
 {
-	cout<<1;
 	system("g++ Code.cpp -o main.exe");
 	char check[(int)1e9];
 	std::vector<unsigned long long> y(a.size());
