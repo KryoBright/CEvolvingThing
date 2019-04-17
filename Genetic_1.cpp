@@ -485,7 +485,6 @@ unsigned long long tester(
 
 
 		system("main.exe");
-		cout<<1;
 		sleep(1);
 
 		ifstream ostream(ofile, ios::out);
