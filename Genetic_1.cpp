@@ -380,7 +380,7 @@ string show(GenCode A,long &i)
 	if (A.Gens[i]=='9')
 	{
 		i++;
-		r="while(("+show(A,i)+")and("+show(A,i)+")){ \n if(clock()/CLOCKS_PER_SEC>1){break;} ";
+		r="while(("+show(A,i)+")and("+show(A,i)+")){ \n if(clock()/CLOCKS_PER_SEC>0.05){break;} ";
 		return r;
 	}
 	if (A.Gens[i]=='B')
@@ -422,12 +422,101 @@ void rout(GenCode A)
 	fout.close();
 }
 
+void gen(std::vector<std::vector<long long>> & a,
+         std::vector<unsigned long long> & x)
+{
+	long n=20;
+	long h=0;
+	vector<long long>p;
+	while (h<n)
+	{
+		p.clear();
+		long j=rand()%100;
+		long u=rand()%2000;
+		long i=0;
+		bool t=false;
+		long ps=-1;
+		p.push_back(j);
+		while (i<j)
+		{
+			if ((rand()%(j-i))or(t))
+			{
+				p.push_back(rand()%2000);
+			}
+			else
+			{
+				p.push_back(u);
+				ps=i;
+			}
+			i++;
+		}
+		x.push_back(ps);
+		a.push_back(p);
+		h++;
+	}
+}
+
+
+unsigned long long tester(
+  const char * ofile,
+  const char * ifile,
+  const std::vector<std::vector<long long>> & a,
+  const std::vector<unsigned long long> & x
+)
+{
+	cout<<1;
+	system("g++ Code.cpp -o main.exe");
+	char check[(int)1e9];
+	std::vector<unsigned long long> y(a.size());
+
+	unsigned long long unic_ans = 0;
+	unsigned long long r_ans = 0;
+
+	for(unsigned long long i = 0; i < a.size(); ++i)
+	{
+
+		ofstream istream(ifile);
+
+		istream << a[i].size() << '\n';
+		for(unsigned long long j = 0; j < a[i].size(); ++i)
+		{
+			istream << a[i][j] << ' ';
+		}
+
+
+		system("main.exe");
+
+		ifstream ostream(ofile, ios::out);
+
+		ostream >> y[i];
+
+		unic_ans += !check[y[i]];
+		r_ans += y[i] == x[i];
+
+		check[y[i]] = true;
+	}
+
+	return r_ans + unic_ans;
+}
+
+unsigned long long fitness(
+  const char * ifile,
+  const char * ofile,
+  const std::vector<std::vector<long long>> & a,
+  const std::vector<unsigned long long> & x
+)
+{
+	return tester(ifile, ofile,  a, x);
+}
+
 int main()
 {
 	srand(time(0));
 	long am=10;//Number of remaining after selection
 	GenCode *B=new GenCode[am];
 	multimap<long,GenCode>r;
+	vector<vector<long long>> a;
+	vector<unsigned long long> x;
 	//Test generator;
 	long n=10;//Number of iterations;
 	long i=0;
@@ -444,11 +533,13 @@ int main()
 	i=0;
 	while (i<n)
 	{
+		gen(a,x);
 		long k=0;
 		while (k<am)
 		{
 			rout(B[k]);
-			r.insert(make_pair(/*Fitness of Code.cpp*,1 is placeholder*/1,B[k]));
+			r.insert(make_pair(fitness("ifile.txt","ofile.txt",a,x),B[k]));
+			cout<<1;
 			remove("Code.cpp");
 			k++;
 		}
@@ -458,13 +549,13 @@ int main()
 		{
 			tmp=cross(B[k],B[k+1]);
 			rout(tmp);
-			r.insert(make_pair(/*Fitness of Code.cpp*,1 is placeholder*/1,tmp));
+			r.insert(make_pair(fitness("ifile.txt","ofile.txt",a,x),tmp));
 			remove("Code.cpp");
 			k++;
 		}
 		tmp=cross(B[k],B[0]);
 		rout(tmp);
-		r.insert(make_pair(/*Fitness of Code.cpp*,1 is placeholder*/1,tmp));
+		r.insert(make_pair(fitness("ifile.txt","ofile.txt",a,x),tmp));
 		remove("Code.cpp");
 		k=0;
 		while (k<am)
@@ -472,7 +563,7 @@ int main()
 			tmp=B[k];
 			Mut_all(tmp);
 			rout(tmp);
-			r.insert(make_pair(/*Fitness of Code.cpp*,1 is placeholder*/1,tmp));
+			r.insert(make_pair(fitness("ifile.txt","ofile.txt",a,x),tmp));
 			remove("Code.cpp");
 			k++;
 		}
@@ -490,55 +581,3 @@ int main()
 }
 
 
-unsigned long long tester(
-  const char * ofile,
-  const char * ifile,
-  const std::string & prog,
-  const std::vector<std::vector<long long>> & a,
-  const std::vector<unsigned long long> & x
-)
-{
-	system("gnome-terminal -x sh -c 'g++ -std=c++17 -o main Code.cpp'");
-
-	char check[(int)1e9];
-	std::vector<unsigned long long> y(a.size());
-
-	unsigned long long unic_ans = 0;
-	unsigned long long r_ans = 0;
-
-	for(unsigned long long i = 0; i < a.size(); ++i)
-	{
-
-		std::ofstream istream(ifile);
-
-		istream << a[i].size() << '\n';
-		for(unsigned long long j = 0; j < a[i].size(); ++i)
-		{
-			istream << a[i][j] << ' ';
-		}
-
-		system("gnome-terminal -x sh -c './main'");
-
-		std::ifstream ostream(ofile, ios::out);
-
-		ostream >> y[i];
-
-		unic_ans += !check[y[i]];
-		r_ans += y[i] == x[i];
-
-		check[y[i]] = true;
-	}
-
-	return r_ans + unic_ans;
-}
-
-unsigned long long fitness(
-  const char * pfile,
-  const char * ofile,
-  const std::string & prog,
-  const std::vector<std::vector<long long>> & a,
-  const std::vector<unsigned long long> & x
-)
-{
-	return tester(pfile, ofile, prog, a, x);
-}
