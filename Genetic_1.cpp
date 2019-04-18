@@ -69,10 +69,11 @@ void Mut_Del(GenCode &A)
 			else
 			{
 				i=y+1;
-			}
-			while(A.Gens[i]=='B')
-			{
-				i++;
+
+				while(A.Gens[i]=='B')
+				{
+					i++;
+				}
 			}
 			if (i==A.Gens.size())
 			{
@@ -233,7 +234,7 @@ void Mut_all(GenCode &A)
 			rep(A);
 		}
 	}
-	while (p<0.5);
+	while (p<0.1);
 }
 
 GenCode cross(GenCode A,GenCode B)
@@ -309,13 +310,13 @@ GenCode cross(GenCode A,GenCode B)
 		}
 		b1=0;
 		k=j;
-		while (k<A.Gens.size())
+		while (k<B.Gens.size())
 		{
-			if (A.Gens[k]=='B')
+			if (B.Gens[k]=='B')
 			{
 				b1++;
 			}
-			if (A.Gens[k]=='9')
+			if (B.Gens[k]=='9')
 			{
 				b1--;
 			}
@@ -466,43 +467,46 @@ unsigned long long tester(
   const std::vector<unsigned long long> & x
 )
 {
-	system("g++ Code.cpp -o main.exe");
-	char check[1000000];
-	std::vector<unsigned long long> y(a.size());
-
-	unsigned long long unic_ans = 0;
-	unsigned long long r_ans = 0;
-
-	for(unsigned long long i = 0; i < a.size(); ++i)
+	if(!system("g++ Code.cpp -o main.exe"))
 	{
+		char check[1000000];
+		std::vector<unsigned long long> y(a.size());
 
-		ofstream istream(ifile);
+		unsigned long long unic_ans = 0;
+		unsigned long long r_ans = 0;
 
-		istream << a[i].size() << '\n';
-		for(unsigned long long j = 0; j < a[i].size(); ++j)
-		{
-			istream << a[i][j] << ' ';
-		}
-
-
-		if (!system("main.exe"))
+		for(unsigned long long i = 0; i < a.size(); ++i)
 		{
 
-			ifstream ostream(ofile,ios::in);
+			ofstream istream(ifile);
 
-			ostream >> y[i];
+			istream << a[i].size() << '\n';
+			for(unsigned long long j = 0; j < a[i].size(); ++j)
+			{
+				istream << a[i][j] << ' ';
+			}
 
-			y[i]=0;
 
-			unic_ans += !check[y[i]];
-			r_ans += y[i] == x[i];
+			if (!system("main.exe"))
+			{
 
-			check[y[i]] = true;
+				ifstream ostream(ofile,ios::in);
+
+				ostream >> y[i];
+
+				y[i]=0;
+
+				unic_ans += !check[y[i]];
+				r_ans += y[i] == x[i];
+
+				check[y[i]] = true;
+			}
+			else return -1;
 		}
-		else return -1;
+
+		return r_ans + unic_ans;
 	}
-
-	return r_ans + unic_ans;
+	else return -1;
 }
 
 unsigned long long fitness(
@@ -529,7 +533,7 @@ int main()
 	while (i<am)
 	{
 		long t=0;
-		while (t<10)
+		while (t<40)
 		{
 			add(B[i]);
 			t++;
@@ -550,7 +554,7 @@ int main()
 			rout(B[k]);
 			B[k].fit=fitness("ifile.txt","ofile.txt",a,x);
 			remove("Code.cpp");
-			r.insert(make_pair(-B[k].fit,B[k]));
+			r.insert(make_pair(10-B[k].fit,B[k]));
 			k++;
 		}
 		k=0;
@@ -560,14 +564,14 @@ int main()
 			tmp=cross(B[k],B[k+1]);
 			rout(tmp);
 			tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
-			r.insert(make_pair(-tmp.fit,tmp));
+			r.insert(make_pair(10-tmp.fit,tmp));
 			remove("Code.cpp");
 			k++;
 		}
 		tmp=cross(B[k],B[0]);
 		rout(tmp);
 		tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
-		r.insert(make_pair(-tmp.fit,tmp));
+		r.insert(make_pair(10-tmp.fit,tmp));
 		remove("Code.cpp");
 		k=0;
 		while (k<am)
@@ -576,7 +580,7 @@ int main()
 			Mut_all(tmp);
 			rout(tmp);
 			tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
-			r.insert(make_pair(-tmp.fit,tmp));
+			r.insert(make_pair(10-tmp.fit,tmp));
 			remove("Code.cpp");
 			k++;
 		}
