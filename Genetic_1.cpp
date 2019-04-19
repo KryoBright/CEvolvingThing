@@ -219,6 +219,9 @@ void Mut_all(GenCode &A)
 	double p;
 	do
 	{
+		long y;
+		long h=A.comp(0,y);
+		A.Gens.erase(A.Gens.begin(),A.Gens.begin()+h+1);
 		p=rand()*1.0/RAND_MAX;
 		/*	int var=rand()%2;
 			if (var==0)
@@ -234,7 +237,7 @@ void Mut_all(GenCode &A)
 				Mut_Del(A);
 			}*/
 	}
-	while (p<0.7);
+	while (p<0.2);
 }
 
 GenCode cross(GenCode A,GenCode B)
@@ -428,7 +431,7 @@ void rout(GenCode A)
 void gen(std::vector<std::vector<long long>> & a,
          std::vector<unsigned long long> & x)
 {
-	long n=10;
+	long n=12;
 	long h=0;
 	vector<long long>p;
 	while (h<n)
@@ -534,9 +537,9 @@ unsigned long long fitness(
 int main()
 {
 	srand(time(0));
-	long am=3;//Number of remaining after selection
+	long am=5;//Number of remaining after selection
 	GenCode *B=new GenCode[am];
-	multimap<long,GenCode>r;
+	multimap<double,GenCode>r;
 	vector<vector<long long>> a;
 	vector<unsigned long long> x;
 	//Test generator;
@@ -545,7 +548,7 @@ int main()
 	while (i<am)
 	{
 		long t=0;
-		while (t<10)
+		while (t<20)
 		{
 			add(B[i]);
 			t++;
@@ -567,7 +570,7 @@ int main()
 			B[k].fit=fitness("ifile.txt","ofile.txt",a,x);
 			cout<<B[k].fit;
 			remove("Code.cpp");
-			r.insert(make_pair(10-B[k].fit,B[k]));
+			r.insert(make_pair(10-B[k].fit+rand()*1.0/RAND_MAX,B[k]));
 			k++;
 		}
 		k=0;
@@ -578,7 +581,7 @@ int main()
 			rout(tmp);
 			tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
 			cout<<tmp.fit;
-			r.insert(make_pair(10-tmp.fit,tmp));
+			r.insert(make_pair(10-tmp.fit+rand()*1.0/RAND_MAX,tmp));
 			remove("Code.cpp");
 			k++;
 		}
@@ -586,7 +589,7 @@ int main()
 		rout(tmp);
 		tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
 		cout<<tmp.fit;
-		r.insert(make_pair(10-tmp.fit,tmp));
+		r.insert(make_pair(10-tmp.fit+rand()*1.0/RAND_MAX,tmp));
 		remove("Code.cpp");
 		k=0;
 		while (k<am)
@@ -596,7 +599,7 @@ int main()
 			rout(tmp);
 			tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
 			cout<<tmp.fit;
-			r.insert(make_pair(10-tmp.fit,tmp));
+			r.insert(make_pair(10-tmp.fit+rand()*1.0/RAND_MAX,tmp));
 			remove("Code.cpp");
 			k++;
 		}
