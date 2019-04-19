@@ -220,21 +220,21 @@ void Mut_all(GenCode &A)
 	do
 	{
 		p=rand()*1.0/RAND_MAX;
-		int var=rand()%3;
-		if (var==0)
-		{
-			add(A);
-		}
-		if (var==1)
-		{
-			Mut_Del(A);
-		}
-		if (var==2)
-		{
-			rep(A);
-		}
+		/*	int var=rand()%2;
+			if (var==0)
+			{*/
+		add(A);
+		/*	}
+			if (var==1)
+			{
+				rep(A);
+			}
+			if (var==2)
+			{
+				Mut_Del(A);
+			}*/
 	}
-	while (p<0.1);
+	while (p<0.7);
 }
 
 GenCode cross(GenCode A,GenCode B)
@@ -428,17 +428,18 @@ void rout(GenCode A)
 void gen(std::vector<std::vector<long long>> & a,
          std::vector<unsigned long long> & x)
 {
-	long n=3;
+	long n=10;
 	long h=0;
 	vector<long long>p;
 	while (h<n)
 	{
 		p.clear();
-		long j=rand()%10+1;
+		long j=rand()%40+1;
 		long u=rand()%200;
 		long i=0;
 		bool t=false;
 		long ps=-1;
+		p.push_back(u);
 		while (i<j)
 		{
 			if ((rand()%(j-i))or(t))
@@ -469,7 +470,13 @@ unsigned long long tester(
 {
 	if(!system("g++ Code.cpp -o main.exe"))
 	{
-		char check[1000000];
+		char check[100];
+		long u=0;
+		while (u<100)
+		{
+			check[u]=false;
+			u++;
+		}
 		std::vector<unsigned long long> y(a.size());
 
 		unsigned long long unic_ans = 0;
@@ -480,8 +487,8 @@ unsigned long long tester(
 
 			ofstream istream(ifile);
 
-			istream << a[i].size() << '\n';
-			for(unsigned long long j = 0; j < a[i].size(); ++j)
+			istream << a[i].size() << ' ' << a[i][0] << '\n';
+			for(unsigned long long j = 1; j < a[i].size(); ++j)
 			{
 				istream << a[i][j] << ' ';
 			}
@@ -491,11 +498,16 @@ unsigned long long tester(
 			{
 
 				ifstream ostream(ofile,ios::in);
-
-				ostream >> y[i];
-
 				y[i]=0;
-
+				ostream >> y[i];
+				if (y[i]>=100)
+				{
+					y[i]=99;
+				}
+				if (y[i]<0)
+				{
+					y[i]=0;
+				}
 				unic_ans += !check[y[i]];
 				r_ans += y[i] == x[i];
 
@@ -522,7 +534,7 @@ unsigned long long fitness(
 int main()
 {
 	srand(time(0));
-	long am=4;//Number of remaining after selection
+	long am=3;//Number of remaining after selection
 	GenCode *B=new GenCode[am];
 	multimap<long,GenCode>r;
 	vector<vector<long long>> a;
@@ -533,7 +545,7 @@ int main()
 	while (i<am)
 	{
 		long t=0;
-		while (t<40)
+		while (t<10)
 		{
 			add(B[i]);
 			t++;
@@ -553,6 +565,7 @@ int main()
 		{
 			rout(B[k]);
 			B[k].fit=fitness("ifile.txt","ofile.txt",a,x);
+			cout<<B[k].fit;
 			remove("Code.cpp");
 			r.insert(make_pair(10-B[k].fit,B[k]));
 			k++;
@@ -564,6 +577,7 @@ int main()
 			tmp=cross(B[k],B[k+1]);
 			rout(tmp);
 			tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
+			cout<<tmp.fit;
 			r.insert(make_pair(10-tmp.fit,tmp));
 			remove("Code.cpp");
 			k++;
@@ -571,6 +585,7 @@ int main()
 		tmp=cross(B[k],B[0]);
 		rout(tmp);
 		tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
+		cout<<tmp.fit;
 		r.insert(make_pair(10-tmp.fit,tmp));
 		remove("Code.cpp");
 		k=0;
@@ -580,6 +595,7 @@ int main()
 			Mut_all(tmp);
 			rout(tmp);
 			tmp.fit=fitness("ifile.txt","ofile.txt",a,x);
+			cout<<tmp.fit;
 			r.insert(make_pair(10-tmp.fit,tmp));
 			remove("Code.cpp");
 			k++;
@@ -593,7 +609,7 @@ int main()
 			k++;
 		}
 
-		cout<<B[0].fit;
+		cout<<B[0].fit<<endl;
 		i++;
 	}
 	rout(B[0]);
